@@ -1,56 +1,51 @@
 const express = require("express");
 
+
+// const database = require("./config/database");
+// const { connect } = require("mongoose");
+
+const connectDB= require("./config/database");
+const User = require("./models/user")
 const app = express();
 
-// const {userAuth,adminAuth} = require("./middlewares/auht")
 
+app.post("/signup", async (req,res)=>{
+  
+  // creating new instance of user model
+      const user = new User({
+    firstName: "Ruchihim",
+    lastName: "Kapasiyaa",
+    email: "suhanikapasiya2018@gmail.com",
+    password: "Honry@12",
+  
+  });
 
+  try{
 
-// app.use("/admin",adminAuth);
-// // app.use("/user",userAuth);
+  await user.save();
 
-// app.get("/user", userAuth, (req, res) => {
-//   res.send("User Data Sent");
-// });
+  res.send("User added succesfully",);
 
-// app.get("/user/login", (req, res) => {
-//   res.send("User Loing Succesfully");
-// });
-
-// ;
-
-// app.get("/admin/getAllData",(req,res)=>{
-//   res.send("ALl Data sent")
-// })
-
-
-//ERROR  handling
-
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong");
+  }catch(err){
+      res.status(400).send("Error saving the user" + err.message)
   }
-});
-app.get("/getUserData",(req,res)=>{
-    try{
-     
-      
-   throw new Error("dvbzhjf");
-   res.send("User Data Sent");
-    }catch(err){
-       res.status(500).send("Some Error contact support team")
-    }
-
 })
-// wild card error handling
-
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong");
-  }
-});
 
 
-app.listen(3000, () => {
-  console.log("Server is successfully listening on port 3000");
-});
+
+
+
+connectDB()
+  .then(() => {
+
+    console.log("DB Connected Successfully");
+    app.listen(3000, () => {
+      console.log("Server is successfully listening on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error("Database connection failed:", err.message);
+    process.exit(1); 
+  });
+
+// database.connect();
