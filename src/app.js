@@ -1,24 +1,18 @@
 const express = require("express");
-
-
-// const database = require("./config/database");
-// const { connect } = require("mongoose");
-
 const connectDB= require("./config/database");
+
 const User = require("./models/user")
 const app = express();
 
 
+app.use(express.json());
 app.post("/signup", async (req,res)=>{
   
-  // creating new instance of user model
-      const user = new User({
-    firstName: "Ruchihim",
-    lastName: "Kapasiyaa",
-    email: "suhanikapasiya2018@gmail.com",
-    password: "Honry@12",
+
+  console.log("req",req.body);
   
-  });
+  // creating new instance of user model
+  const user = new User(req.body);
 
   try{
 
