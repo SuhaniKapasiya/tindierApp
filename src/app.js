@@ -82,30 +82,39 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params.userId;
   const data = req.body;
   try {
-    const userDetails = await User.findByIdAndUpdate(
-      userId,
-      data,
-    {
-      returnDocument : "after",
-      runValidators:true,
-
-
-    }
-  
+    const ALLOWED_UPDATES = [
+      "photoUrl",
+      "about",
+      "gender",
+      "age",
+      "skills",
+    ];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
     );
-   
-    
-    if(!userDetails){
-        return res.status(404).send("User not found");
+    if (!isUpdateAllowed) {
+      throw new Error("Update not allowed");
+    } 
+    if(data?.skills.length >10){
+      throw new Error("Skill cannot be more than 10");
     }
-     console.log("userDetails", userDetails);
-    res.send("user updated successfully");
+    else {
+      const userDetails = await User.findByIdAndUpdate(userId, data, {
+        returnDocument: "after",
+        runValidators: true,
+      });
+      if (!userDetails) {
+        return res.status(404).send("User not found");
+      }
+      console.log("userDetails", userDetails);
+      res.send("user updated successfully");
+    }
   } catch (err) {
-    res.send("Unable to update user" + err.message);
+    res.send("Unable to update user " + err.message);
   }
 });
 
