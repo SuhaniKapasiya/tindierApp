@@ -72,28 +72,24 @@ app.delete("/user", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-
-
   // console.log("req", req.body);
 
- 
   try {
     // Validation
     validateSignupData(req);
     // creating new instance of user model
-    
-    const {firstName,lastName,email,password} = req.body
+
+    const { firstName, lastName, email, password } = req.body;
 
     //Encrypted password
-    const hashedPassword = await bcrypt.hash(password ,10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     console.log("hashedPassword ", hashedPassword);
-    
 
     const user = new User({
       firstName,
       lastName,
       email,
-      password :hashedPassword,
+      password: hashedPassword,
     });
     await user.save();
 
@@ -103,37 +99,58 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+
+  const { email, password } = req.body;
+  try {
+    
+    if (!email || !password) {
+      throw new Error("Email and password are required");
+    }
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      throw new Error("Invalid credentials");
+    }
+
+    res.send("User logged in successfully");
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
 app.patch("/user/:userId", async (req, res) => {
   const userId = req.params.userId;
   const data = req.body;
   try {
-    const ALLOWED_UPDATES = [
-      "photoUrl",
-      "about",
-      "gender",
-      "age",
-      "skills",
-    ];
+    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
     const isUpdateAllowed = Object.keys(data).every((k) =>
       ALLOWED_UPDATES.includes(k)
     );
     if (!isUpdateAllowed) {
       throw new Error("Update not allowed");
-    } 
-    if(data?.skills.length >10){
+    }
+    if (data?.skills.length > 10) {
       throw new Error("Skills cannot be more than 10");
     }
-    
-      const userDetails = await User.findByIdAndUpdate(userId, data, {
-        returnDocument: "after",
-        runValidators: true,
-      });
-      if (!userDetails) {
-        return res.status(404).send("User not found");
-      }
-      console.log("userDetails", userDetails);
-      res.send("user updated successfully");
-    
+
+    const userDetails = await User.findByIdAndUpdate(userId, data, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    if (!userDetails) {
+      return res.status(404).send("User not found");
+    }
+    console.log("userDetails", userDetails);
+    res.send("user updated successfully");
   } catch (err) {
     res.send("UPDATE FAIL !!!!!!!!" + err.message);
   }

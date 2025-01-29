@@ -28,4 +28,5 @@
 - Validate data in Signup API using helper fun
 - Install bcrypt package
 - Create PasswordHash using bcryp.hash & save user is  encrypted password 
-- 
+- Create login API
+- Compare password and throw errors if email or password is invalid 
