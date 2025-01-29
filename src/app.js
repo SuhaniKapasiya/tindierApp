@@ -2,6 +2,8 @@ const express = require("express");
 const connectDB = require("./config/database");
 
 const User = require("./models/user");
+const { validateSignupData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
 const app = express();
 
 app.use(express.json());
@@ -70,15 +72,34 @@ app.delete("/user", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  console.log("req", req.body);
-  // creating new instance of user model
-  const user = new User(req.body);
+
+
+  // console.log("req", req.body);
+
+ 
   try {
+    // Validation
+    validateSignupData(req);
+    // creating new instance of user model
+    
+    const {firstName,lastName,email,password} = req.body
+
+    //Encrypted password
+    const hashedPassword = await bcrypt.hash(password ,10);
+    console.log("hashedPassword ", hashedPassword);
+    
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      password :hashedPassword,
+    });
     await user.save();
 
     res.send("User added succesfully");
   } catch (err) {
-    res.status(400).send("Error saving the user" + err.message);
+    res.status(400).send("Error: " + err.message);
   }
 });
 
@@ -100,9 +121,9 @@ app.patch("/user/:userId", async (req, res) => {
       throw new Error("Update not allowed");
     } 
     if(data?.skills.length >10){
-      throw new Error("Skill cannot be more than 10");
+      throw new Error("Skills cannot be more than 10");
     }
-    else {
+    
       const userDetails = await User.findByIdAndUpdate(userId, data, {
         returnDocument: "after",
         runValidators: true,
@@ -112,9 +133,9 @@ app.patch("/user/:userId", async (req, res) => {
       }
       console.log("userDetails", userDetails);
       res.send("user updated successfully");
-    }
+    
   } catch (err) {
-    res.send("Unable to update user " + err.message);
+    res.send("UPDATE FAIL !!!!!!!!" + err.message);
   }
 });
 

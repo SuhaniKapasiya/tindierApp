@@ -1,6 +1,5 @@
 
 - JS object vs JSON(difference)
-
 - add the express.json middleware to your app 
 - Make your signup API dynamic to recive data form the end user
 - user.findOne with duplicate email Ida , which  object  returned 
@@ -22,3 +21,11 @@
 - Add timestamps to the userschema
 - Add API level validation on Patch req & Signup post api
 - DATA Sanitizing - Add API validation for each field 
+- Install validator
+- Explore validator Libary funtion and use validator funcs for password ,email,photoURL
+- NEVER TRUST req.body
+
+- Validate data in Signup API using helper fun
+- Install bcrypt package
+- Create PasswordHash using bcryp.hash & save user is  encrypted password 
+- 
