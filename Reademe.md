@@ -30,3 +30,14 @@
 - Create PasswordHash using bcryp.hash & save user is  encrypted password 
 - Create login API
 - Compare password and throw errors if email or password is invalid 
+
+
+- Install cookie-parser
+- just send dummy cookie to user
+- create GER /profile API and check if you get the cookie back
+- Install Jsonwebtoken
+- In login API,after email and password validation,create a JWT token and send user in     cookie
+- read the cookie inside your profile API and find the looged in user
+- userAuth Middleware
+- Add the userAuth middleware in profile API and a sendConnectionreq API
+- Set the expiry od JWT token and cookies to 7 days 

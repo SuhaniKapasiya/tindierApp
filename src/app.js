@@ -4,9 +4,14 @@ const connectDB = require("./config/database");
 const User = require("./models/user");
 const { validateSignupData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auht");
 const app = express();
 
+
 app.use(express.json());
+app.use(cookieParser());
 
 connectDB()
   .then(() => {
@@ -19,6 +24,7 @@ connectDB()
     console.error("Database connection failed:", err.message);
     process.exit(1);
   });
+
 
 app.get("/user", async (req, res) => {
   const userEmail = req.body.email;
@@ -103,7 +109,7 @@ app.post("/login", async (req, res) => {
 
   const { email, password } = req.body;
   try {
-    
+
     if (!email || !password) {
       throw new Error("Email and password are required");
     }
@@ -115,17 +121,43 @@ app.post("/login", async (req, res) => {
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
-    if (!isValidPassword) {
-      throw new Error("Invalid credentials");
+    if (isValidPassword) {
+      
+      //Create token 
+      const token = await jwt.sign({_id:user._id},"TinderApp$790", { expiresIn: "7d" })
+      res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 *3600000) ,});
+      res.send("User logged in successfully");
     }
-
-    res.send("User logged in successfully");
+   else{
+    throw new Error("Invalid credentials");
+   }
   } catch (err) {
     res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
   }
 });
+
+app.get("/profile", userAuth, async(req,res)=>{
+
+  try{
+  res.send(req.user);
+  }catch(err){
+     res.send("ERROR :" + err.message);
+  }
+})
+
+app.post("/sendConnectionreq",userAuth, async (req,res)=>{
+
+  try{
+   
+   res.send(`Connection request sent to ${req.user}`);
+
+  }catch(err){
+     res.send("ERROR :" + err.message);
+  }
+})
 
 app.patch("/user/:userId", async (req, res) => {
   const userId = req.params.userId;
