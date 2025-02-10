@@ -9,6 +9,7 @@ const authRouter = express.Router();
 
 
 authRouter.post("/signup", async (req, res) => {
+  
   // console.log("req", req.body);
 
   try {
@@ -69,5 +70,15 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
+
+authRouter.post("/logout",(req,res) => {
+
+    res.cookie("token", null, {
+      expires: new Date(Date.now())
+    });
+
+    res.send("Logout Successfully");
+
+})
 
 module.exports = authRouter;
