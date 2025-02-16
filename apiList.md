@@ -22,7 +22,7 @@
 - GET /user/feed -Gets you the profiles pf other users on platform
 
 
-status: ignore,interested,accepted,rejected
+status: ignore,interested,accepeted,rejected
 
 
 

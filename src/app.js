@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const User = require("./models/user");
 
 const  authRouter = require("./routes/auth");
-const  requestRouter = require("./routes/request");
+const requestRouter = require("./routes/request");
 const profileRoute = require("./routes/profile");
 
 const app = express();
@@ -89,8 +89,9 @@ app.patch("/user/:userId", async (req, res) => {
   const userId = req.params.userId;
   const data = req.body;
   try {
-    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
-    const isUpdateAllowed = Object.keys(data).every((k) =>
+    
+     const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+     const isUpdateAllowed = Object.keys(data).every((k) =>
       ALLOWED_UPDATES.includes(k)
     );
     if (!isUpdateAllowed) {
@@ -115,6 +116,7 @@ app.patch("/user/:userId", async (req, res) => {
 });
 
 app.patch("/user/updateByEmailId", async (req, res) => {
+
   const emaiId = req.body.email;
   const updateData = req.body;
 
