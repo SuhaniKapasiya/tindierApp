@@ -12,9 +12,15 @@
 ## connectionRequestRouter
 - POST /request/send/intersted/:userId
 - POST /request/send/ignored/:userId
+ 
+- Or make  single api of above both like this 
+- POST /request/send/:Status/:userId
 
 - POST /request/review/accepted/:requestId
 - POST /request/review/rejected/:requestId
+
+- similarly above to api can be  make to single api like belwo
+- POST /request/review/:status/:requestId
 
 ## userRouter
 - GET /user/connections
