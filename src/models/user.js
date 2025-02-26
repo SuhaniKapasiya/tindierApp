@@ -89,6 +89,7 @@ userSchema.methods.getJWT = async function () {
 };
 
 userSchema.methods.comparepassword = async function (InputPassword) {
+  
   const user = this;
   const Passwordhashe = user.password;
 

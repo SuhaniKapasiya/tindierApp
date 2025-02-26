@@ -16,6 +16,7 @@ profileRoute.get("/profile/view", userAuth, async (req, res) => {
 
 profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
   try {
+
     if (!validateProfileEditData(req)) {
       throw new Error("Invalid Edit Request");
     }
@@ -35,6 +36,7 @@ profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
   }
 });
 
+//TODO   for forgetpassword flow
 profileRoute.patch("/profile/password", userAuth, async (req, res) => {
   
   const { email, password } = req.body;

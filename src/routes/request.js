@@ -3,7 +3,7 @@ const { userAuth } = require("../middlewares/auht");
 const User = require("../models/user");
 
 const ConnectionRequest = require("../models/connectionRequest");
-const { findOne } = require("../models/user");
+
 
 const requestRouter = express.Router();
 
@@ -11,6 +11,7 @@ requestRouter.post(
   "/request/send/:status/:toUserId",
   userAuth,
   async (req, res) => {
+
     try {
       const fromUserId = req.user._id;
       const toUserId = req.params.toUserId;
@@ -43,6 +44,7 @@ requestRouter.post(
           { fromUserId: toUserId, toUserId: fromUserId },
         ],
       });
+      
       if (existingConnectionRequest) {
         return res.status(404).json({
           message: "Connection Request Already Exists",
@@ -66,7 +68,7 @@ requestRouter.post(
   }
 );
 
-module.exports = requestRouter;
+
 
 requestRouter.post(
   
@@ -119,3 +121,8 @@ requestRouter.post(
 
   }
 );
+
+
+
+
+module.exports = requestRouter;
