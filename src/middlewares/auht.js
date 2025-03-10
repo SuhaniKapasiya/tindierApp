@@ -13,6 +13,8 @@ try{
   const { _id } = decodedMessage;
 
   const user = await User.findById(_id);
+  console.log("user in middle ware",user);
+  
 
    if (!user) {
     throw Error("User not found");

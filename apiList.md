@@ -15,7 +15,7 @@
 - POST /request/send/intersted/:userId
 - POST /request/send/ignored/:userId
  
-- Or make  single api of above both like this 
+- Or make single api of above both like this 
 - POST /request/send/:Status/:userId
 
 - POST /request/review/accepted/:requestId
