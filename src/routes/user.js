@@ -1,5 +1,5 @@
 const express = require("express");
-const { userAuth } = require("../middlewares/auht");
+const { userAuth } = require("../middlewares/auth");
 
 const ConnectionRequest = require("../models/connectionRequest");
 
@@ -13,12 +13,11 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
     const connectionRequest = await ConnectionRequest.find({
-      
       toUserId: loggedInUserId,
       status: "interested",
     }).populate("fromUserId", [
       "firstName",
-      "lastName", 
+      "lastName",
       "photoUrl",
       "skills",
       "about",
@@ -33,46 +32,38 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
   }
 });
 
+userRouter.get("/user/connections", userAuth, async (req, res) => {
+  try {
+    const loggedInUserId = req.user;
 
-userRouter.get("/user/connections",userAuth, async(req,res)=>{
+    const connectionRequest = await ConnectionRequest.find({
+      $or: [
+        {
+          toUserId: loggedInUserId._id,
+          status: "accepted",
+        },
 
-  try{
+        {
+          fromUserId: loggedInUserId._id,
+          status: "accepted",
+        },
+      ],
+    })
+      .populate("fromUserId", USER_SAFE_DATA)
+      .populate("toUserId", USER_SAFE_DATA);
 
-     const loggedInUserId = req.user;
-     
-     const connectionRequest = await ConnectionRequest.find({
-       $or: [
-         {
-           toUserId: loggedInUserId._id,
-           status: "accepted",
-         },
+    console.log("connectionRequest data", connectionRequest);
 
-         {
-           fromUserId: loggedInUserId._id,
-           status: "accepted",
-         },
-       ],
-     })
-       .populate("fromUserId", USER_SAFE_DATA)
-       .populate("toUserId", USER_SAFE_DATA);
-
-
-       console.log("connectionRequest data", connectionRequest);
-       
-
-
-     const data = connectionRequest.map((row)=>{
-      if(row.fromUserId._id.toString() === loggedInUserId._id.toString()){
-         return row.toUserId;
+    const data = connectionRequest.map((row) => {
+      if (row.fromUserId._id.toString() === loggedInUserId._id.toString()) {
+        return row.toUserId;
       }
       return row.fromUserId;
-     })
-     
-   res.json({ data: data });
+    });
 
-  }catch(error){
-     res.status(400).send({message:error.message})
+    res.json({ data: data });
+  } catch (error) {
+    res.status(400).send({ message: error.message });
   }
-
-})
+});
 module.exports = userRouter;

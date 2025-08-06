@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const profileRoute = express.Router();
 
-const { userAuth } = require("../middlewares/auht");
+const { userAuth } = require("../middlewares/auth");
 const { validateProfileEditData } = require("../utils/validation");
 
 profileRoute.get("/profile/view", userAuth, async (req, res) => {
@@ -16,9 +16,8 @@ profileRoute.get("/profile/view", userAuth, async (req, res) => {
 
 profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
   try {
-
     if (!validateProfileEditData(req)) {
-        throw new Error("Invalid Edit Request");
+      throw new Error("Invalid Edit Request");
     }
 
     const loggedInUser = req.user;
@@ -38,7 +37,6 @@ profileRoute.patch("/profile/edit", userAuth, async (req, res) => {
 
 //TODO   for forgetpassword flow
 profileRoute.patch("/profile/password", userAuth, async (req, res) => {
-  
   const { email, password } = req.body;
 
   try {

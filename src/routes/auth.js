@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { validateSignupData } = require("../utils/validation");
 const User = require("../models/user");
 
-const authRouter = express.Router();
+const authRouter = express.Router(); 
 
 
 
@@ -26,7 +26,7 @@ authRouter.post("/signup", async (req, res) => {
       firstName,
       lastName,
       email,
-      password: hashedPassword,
+      password: hashedPassword, 
     });
     await user.save();
 
@@ -51,6 +51,7 @@ authRouter.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("Invalid credentials");
     }
+    
 
     const isValidPassword = await user.comparepassword(password);
     if (isValidPassword) {
